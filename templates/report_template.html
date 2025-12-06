@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Quality Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
+        .header { background: linear-gradient(135deg, #0bbde0 0%, #313ab2 100%); color: white; padding: 30px; text-align: center; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
+        .section { background: white; margin: 20px 0; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .metric { display: inline-block; margin: 10px 20px; text-align: center; }
+        .metric-value { font-size: 32px; font-weight: bold; color: #0a2bbe; }
+        .metric-label { font-size: 14px; color: #666; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #667eea; color: white; }
+        tr:hover { background: #f5f5f5; }
+        .pass { color: #27ae60; font-weight: bold; }
+        .fail { color: #ff0000; font-weight: bold; }
+        .score { font-size: 48px; font-weight: bold; margin: 20px 0; }
+        .score.excellent { color: #27ae60; }
+        .score.good { color: #f39c12; }
+        .score.fair { color: #3498db; }
+        .score.poor { color: #e74c3c; }
+        .dimension-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .dimension-card { background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid #667eea; }
+        .dimension-score { font-size: 28px; font-weight: bold; color: #00f9e9; }
+        .dimension-name { font-size: 12px; color: #00ffdd; margin-top: 5px; text-transform: uppercase; }
+        .dimension-desc { font-size: 11px; color: #999; margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><b>Data Quality Report</b></h1>
+        <p>Generated: {{ report_date }}</p>
+        <a href="/" style="color: white; text-decoration: none; background: rgb(207, 255, 241); padding: 8px 20px; border-radius: 20px; display: inline-block; margin-top: 10px;">← Analyze Another File</a>
+    </div>
+    
+    <div class="container">
+        <div class="section">
+            <h2>Overview</h2>
+            <div class="metric">
+                <div class="metric-value">{{ total_rows }}</div>
+                <div class="metric-label">Total Rows</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">{{ total_columns }}</div>
+                <div class="metric-label">Total Columns</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">{{ duplicate_count }}</div>
+                <div class="metric-label">Duplicate Rows</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">{{ missing_cells }}</div>
+                <div class="metric-label">Missing Values</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Overall Quality Score</h2>
+            <div class="score {{ score_class }}">
+                {{ overall_score }}%
+            </div>
+            <p style="font-size: 18px; color: #666;">Rating: <strong>{{ score_label }}</strong></p>
+        </div>
+        
+        <div class="section">
+            <h2>Quality Dimensions Breakdown</h2>
+            <div class="dimension-grid">
+                <div class="dimension-card">
+                    <div class="dimension-score">{{ completeness_score }}%</div>
+                    <div class="dimension-name">Completeness (30%)</div>
+                    <p class="dimension-desc">Missing values</p>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-score">{{ uniqueness_score }}%</div>
+                    <div class="dimension-name">Uniqueness (20%)</div>
+                    <p class="dimension-desc">Duplicate rows</p>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-score">{{ validity_score }}%</div>
+                    <div class="dimension-name">Validity (20%)</div>
+                    <p class="dimension-desc">Data type errors</p>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-score">{{ consistency_score }}%</div>
+                    <div class="dimension-name">Consistency (15%)</div>
+                    <p class="dimension-desc">Data variation</p>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-score">{{ accuracy_score }}%</div>
+                    <div class="dimension-name">Accuracy (10%)</div>
+                    <p class="dimension-desc">Outliers detected</p>
+                </div>
+                <div class="dimension-card">
+                    <div class="dimension-score">{{ timeliness_score }}%</div>
+                    <div class="dimension-name">Timeliness (5%)</div>
+                    <p class="dimension-desc">Data freshness</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Missing Values</h2>
+            {{ missing_report_html|safe }}
+        </div>
+        
+        <div class="section">
+            <h2>Outliers Detected</h2>
+            {{ outlier_html|safe }}
+        </div>
+        
+        <div class="section">
+            <h2>Column Details</h2>
+            {{ column_details_html|safe }}
+        </div>
+    </div>
+</body>
+</html>
